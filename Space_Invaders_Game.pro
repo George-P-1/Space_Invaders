@@ -4,8 +4,11 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+        enemy.cpp \
         main.cpp \
         player.cpp
+
+# ----------CHANGE THE PATH TO SFML LIBRARY ACCORDINGLY-----------------------
 
 INCLUDEPATH += "C:/Users/George/Desktop/Automatic Control and Robotics/Semester 2/Information Engineering/SFML-2.5.1/include"
 
@@ -16,7 +19,6 @@ CONFIG(debug, debug|release){
     LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-system -lsfml-window
 }
 
-# -------------------Make sure the project name is not too long---------------
-
 HEADERS += \
+    enemy.h \
     player.h
