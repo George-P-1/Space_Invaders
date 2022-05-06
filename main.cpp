@@ -152,7 +152,7 @@ int main()
     if(!enemy_texture.loadFromFile("Textures/enemy.png")) std::cerr << "Could not load enemy texture." << std::endl;
     // Enemies
     int enemy_count = 8;
-    int enemy_speed = 300; // Set enemy speed
+    int enemy_speed = 250; // Set enemy speed
     std::vector<Enemy> enemies;
     for(int i = 0; i < enemy_count; i++) // Initialize with fixed number of enemies
     {
@@ -237,6 +237,15 @@ int main()
     quit_button.setFont(myfont);
     quit_button.setCharacterSize(50);
     quit_button.setPosition(windowSize.x * (0.75) - quit_button.getGlobalBounds().width/2, 450);
+    sf::Text quit_help;
+    quit_help.setString("[Press Q]");
+    quit_help.setStyle(sf::Text::Bold);
+    quit_help.setFillColor(sf::Color::Yellow);
+    quit_help.setOutlineColor(sf::Color::Red);
+    quit_help.setOutlineThickness(2);
+    quit_help.setFont(myfont);
+    quit_help.setCharacterSize(25);
+    quit_help.setPosition(windowSize.x * (0.75) - quit_help.getGlobalBounds().width/2, 520);
 
     // Exit Button (With sprite)
     sf::Texture exit_texture;
@@ -320,15 +329,25 @@ int main()
     sf::Music music;
     if (!music.openFromFile("Textures/Sounds/music.ogg")) std::cerr << "Could not load music buffer." << std::endl;
     music.setLoop(true);
-    music.setVolume(25.0f);
+    music.setVolume(15.0f);
     music.play();
+    sf::SoundBuffer levelup_buffer;
+    if (!levelup_buffer.loadFromFile("Textures/Sounds/levelup.wav")) std::cerr << "Could not load levelup buffer." << std::endl;
+    sf::Sound levelup_sound;
+    levelup_sound.setBuffer(levelup_buffer);
+    levelup_sound.setVolume(25.0f);
+    sf::SoundBuffer gameover_buffer;
+    if (!gameover_buffer.loadFromFile("Textures/Sounds/gameover.wav")) std::cerr << "Could not load gameover buffer." << std::endl;
+    sf::Sound gameover_sound;
+    gameover_sound.setBuffer(gameover_buffer);
+    gameover_sound.setVolume(25.0f);
 
     // Difficulty Increment
-    int maxlevel = 8;
-    int currentlevel = 0; // Increase level every 500 points
+    int maxlevel = 10; // Total 10 levels
+    int currentlevel = 1; // Increase level every 500 points
 
     // Side Teleport - Continuous movement of player through sides of window
-    bool side_teleport = true;
+    bool side_teleport = false;
 
     // Clock
     sf::Clock clock;
@@ -374,6 +393,7 @@ int main()
                 if(enemies[i].escape)// If escaped then ------------Game Over------------------
                 {
                     gameover = true;
+                    if(sound_setting.getCheck()) gameover_sound.play();
                 }
                 if(!enemies[i].alive) // Check if enemy is still shootable/alive. Enemy is not alive
                 {
@@ -417,11 +437,12 @@ int main()
             bullet.animate(elapsed, player.getPlayerPosition()); // Animate bullet after checking for collision. Otherwise bullet goes through enemy
 
             // ------------Difficulty Increment-----------
-            if(score/500 == currentlevel+1 && currentlevel <= maxlevel) // If score has reached points required for next level
+            if(score/500 == currentlevel+1 && currentlevel < maxlevel) // If score has reached points required for next level
             {
                 currentlevel++;
                 enemy_count += 2;
                 enemy_speed += 25;
+                if(sound_setting.getCheck()) levelup_sound.play();
             }
 
             // ----------Explosion Animation-------------
@@ -458,6 +479,10 @@ int main()
         {
             gameover = false;
             score = 0;
+            currentlevel = 1; // Reset difficulty level
+            // Reset to default values
+            enemy_count = 8;
+            enemy_speed = 250;
             enemies.clear(); // Clear all enemies
             for(int i = 0; i < enemy_count; i++) // Initialize with fixed number of enemies
             {
@@ -599,6 +624,10 @@ int main()
                     {
                         gameover = false;
                         score = 0;
+                        currentlevel = 1; // Reset difficulty level
+                        // Reset to default values
+                        enemy_count = 8;
+                        enemy_speed = 250;
                         enemies.clear(); // Clear all enemies
                         for(int i = 0; i < enemy_count; i++) // Initialize with fixed number of enemies
                         {
@@ -696,6 +725,7 @@ int main()
             window.draw(start_button); // Draw the start button
             window.draw(start_help);
             window.draw(quit_button); // Draw the quit button
+            window.draw(quit_help);
         }
 
         // end the current frame
