@@ -174,7 +174,7 @@ int main()
     sf::Texture player_texture;
     if(!player_texture.loadFromFile("Textures/player.png")) std::cerr << "Could not load spaceship/player texture." << std::endl;
     Player player(player_texture, windowSize);
-    player.setSpeed(400);
+    player.setSpeed(500);
 
     // Random Seed
     std::srand(std::time(NULL)); // For random spawn location of enemies
@@ -346,6 +346,9 @@ int main()
         // -----Delta Time----
         sf::Time elapsed = clock.restart();
 
+        // Framerate
+        window_fps = 1 / elapsed.asSeconds(); // To check framerate
+
         // ------Show Score----
         score_text.setString("Score: " + std::to_string(score));
 
@@ -424,7 +427,7 @@ int main()
             if(score % 100 == 0 && score != score_spawn)
             {
                 score_spawn = score;
-                makeEnemyDestroyer(destroyer_texture, windowSize, 8, player, enemies);
+                makeEnemyDestroyer(destroyer_texture, windowSize, 40, player, enemies); // speed = 40
             }
 
             // -------------Bullet Movement-------------
@@ -474,8 +477,17 @@ int main()
                         score += 10; // 10 points for each collision
                         // Create animation
                         Animation destroyer_explosion(explosion2_texture, 2);
-                        destroyer_explosion.enemyposition = sf::Vector2f(destroyer->getPosition().x-destroyer->getGlobalBounds().width/2,
-                                                             destroyer->getPosition().y-destroyer->getGlobalBounds().height/2);
+                        // Center explosion wrt to custom destroyer origin if it was set
+                        if(destroyer->getOrigin() != sf::Vector2f(0, 0))
+                        {
+                            destroyer_explosion.enemyposition = sf::Vector2f(destroyer->getPosition().x-destroyer->getGlobalBounds().width/2,
+                                                                             destroyer->getPosition().y-destroyer->getGlobalBounds().height/2);
+                        }
+                        else
+                        {
+                            destroyer_explosion.setRotation(destroyer_explosion.getRotation()); // Doesn't work well
+                            destroyer_explosion.enemyposition = sf::Vector2f(destroyer->getPosition().x, destroyer->getPosition().y);
+                        }
                         destroyer_explosion.explosion = true;
                         animations.emplace_back(destroyer_explosion);
                         if(sound_setting.getCheck()) explosion_sound.play();
@@ -716,7 +728,12 @@ int main()
 
         if(!startmenu) // If not on start menu
         {
-            if(fps_setting.getCheck()) window.draw(fps_text); // Draw fps
+            if(fps_setting.getCheck()) // Draw fps
+            {
+                fps_text.setString(std::to_string(window_fps));
+                fps_text.setPosition(windowSize.x - fps_text.getGlobalBounds().width -5, 0); // Required when fps is more than 2 digits
+                window.draw(fps_text);
+            }
             bullet.drawBullet(window); // Draw bullet
             player.drawPlayer(window); // Draw player/spacship
             for(auto &enemy : enemies) // Iterate through enemies vector

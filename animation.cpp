@@ -58,7 +58,7 @@ void Animation::playAnimation(sf::Time &elapsed)
 // For new animation spritesheet
 void Animation::setShipParameters()
 {
-    this->setScale((float)1/2, (float)1/2); // 256 / 4 = 64 // 256 / 2 = 128
+    this->setScale((float)1/2, (float)1/2); // 256 / 2 = 128
     spritedim = 256; // Dimension of one sprite in sprite sheet. 256x256
     switch_time = 0.02; // 0.02 -> 50 fps
     totalrow = 1;
@@ -69,8 +69,28 @@ void Animation::setShipParameters()
 
 void Animation::playShipAnimation(sf::Time &elapsed)
 {
-    // Same animation code for new explosion spritesheet
-    this->playDestroyerAnimation(elapsed);
+    // Set animation position
+    // Center animation wrt to enemy sprite
+    //  ______
+    // |  __  |      __
+    // | |__| | b   |__| a  [ x - (b-a)/2, y - (b-a)/2 ]
+    // |______|
+    this->setPosition(this->enemyposition.x - (this->getGlobalBounds().width - 64)/2,
+                      this->enemyposition.y - (this->getGlobalBounds().height - 64)/2);
+
+    this->total_time += elapsed.asSeconds();
+
+    if(this->total_time >= this->switch_time)
+    {
+        this->total_time -= this->switch_time; // Almost same as total_time = 0;. In the long run this will prevent errors caused by approximations.
+        this->setTextureRect(sf::IntRect((this->currentcolumn-1) * this->spritedim, 0, this->spritedim, this->spritedim));
+        this->currentcolumn++; // Go to next column
+        if(this->currentcolumn >= this->totalcolumn) // If one animation is done
+        {
+            this->explosion = false;
+            this->currentcolumn = 1;
+        }
+    }
 }
 
 void Animation::setDestroyerParameters()

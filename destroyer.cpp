@@ -20,7 +20,7 @@ Destroyer::Destroyer(sf::Texture &enemy_texture, sf::Vector2i windowSize)
 void Destroyer::animateDestroyer(sf::Time elapsed)
 {
     // a * sin(bx + c). a is amplitude. b is frequency. c is offset.
-    this->move(20 * std::sin(0.5 * this->getPosition().y - 6.2), speedy_ * elapsed.asSeconds());
+    this->move(20 * std::sin(0.1 * this->getPosition().y - 0), speedy_ * elapsed.asSeconds());
     this->rotate(this->rotation_angle * elapsed.asSeconds());
 
     current_y_ = this->getPosition().y - this->getGlobalBounds().height/2; // subtract half of height to account for the custom origin
