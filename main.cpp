@@ -485,7 +485,7 @@ int main()
                         }
                         else
                         {
-                            destroyer_explosion.setRotation(destroyer_explosion.getRotation()); // Doesn't work well
+//                            destroyer_explosion.setRotation(destroyer_explosion.getRotation()); // Doesn't work well
                             destroyer_explosion.enemyposition = sf::Vector2f(destroyer->getPosition().x, destroyer->getPosition().y);
                         }
                         destroyer_explosion.explosion = true;
@@ -529,6 +529,7 @@ int main()
             enemyShip_count = 8;
             enemyShip_speed = 250;
             enemies.clear(); // Clear all enemies
+            bullet.fired = false; // Reset bullet
             for(int i = 0; i < enemyShip_count; i++) // Initialize with fixed number of enemies
             {
                 makeEnemyShip(enemy_texture, windowSize, enemyShip_speed, player, enemies);
@@ -654,6 +655,7 @@ int main()
                         enemyShip_count = 8;
                         enemyShip_speed = 250;
                         enemies.clear(); // Clear all enemies
+                        bullet.fired = false; // Reset bullet
                         for(int i = 0; i < enemyShip_count; i++) // Initialize with fixed number of enemies
                         {
                             makeEnemyShip(enemy_texture, windowSize, enemyShip_speed, player, enemies);
