@@ -14,11 +14,11 @@ Download the external library called [SFML](https://www.sfml-dev.org/download/sf
   git clone https://github.com/George-P-1/Space_Invaders_ProjectX
 ```
 
-#### Before Running
+#### Before Running (in Qt Creator)
 Change the path in the .pro file to the location of the downloaded SFML folder in your computer.
 
 ## Authors
 - [George Punnoose](https://www.github.com/George-P-1)
 
 ## Gameplay
-[Gameplay Video](https://www.youtube.com/watch?v=RiMxhGQV17I)
+[Gameplay Video](https://youtu.be/GI2JRfvSg4I)
